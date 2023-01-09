@@ -2,13 +2,17 @@ import { async } from "@firebase/util";
 import React, { useRef } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { useSendPasswordResetEmail, useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import {
+  useSendPasswordResetEmail,
+  useSignInWithEmailAndPassword,
+} from "react-firebase-hooks/auth";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import auth from "../../../firebase.init";
 import Loading from "../../Shared/Loading/Loading";
 import SocialLogin from "../SocialLogin/SocialLogin";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import PageTitle from "../../Shared/PageTitle/PageTitle";
 
 const Login = () => {
   const emailRef = useRef("");
@@ -21,7 +25,6 @@ const Login = () => {
 
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
-
 
   if (user) {
     navigate(from, { replace: true });
@@ -38,22 +41,19 @@ const Login = () => {
   const [sendPasswordResetEmail, sending] = useSendPasswordResetEmail(auth);
 
   if (error) {
-    errorElement = (
-        <p className="text-danger">Error: {error?.message}</p>
-    );
+    errorElement = <p className="text-danger">Error: {error?.message}</p>;
   }
 
-  const resetPassword = async()=>{
+  const resetPassword = async () => {
     const email = emailRef.current.value;
-    if(email){
+    if (email) {
       await sendPasswordResetEmail(email);
-    toast('Sent Email');
+      toast("Sent Email");
+    } else {
+      toast("Please Enter Your Email Address");
     }
-    else{
-      toast('Please Enter Your Email Address');
-    }
-  }
-  if(loading || sending){
+  };
+  if (loading || sending) {
     return <Loading></Loading>;
   }
 
@@ -63,6 +63,7 @@ const Login = () => {
 
   return (
     <div className="container w-50 mx-auto">
+      <PageTitle title="Login"></PageTitle>
       <h2 className="text-primary text-center mt-2">Please Log in</h2>
 
       <Form onSubmit={handleSubmit}>
@@ -103,7 +104,7 @@ const Login = () => {
       </p>
 
       <p>
-       Forget Password?{" "}
+        Forget Password?{" "}
         <button
           // to="/register"
           className="btn btn-link text-primary pe-auto text-decoration-none"
